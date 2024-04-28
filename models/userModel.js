@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema(
   {
@@ -35,15 +34,20 @@ const userSchema = new mongoose.Schema(
     
     role: {
       type: String,
-      enum: ['employee', 'director', 'RH'],
-      default: 'user',
+      enum: ['employee', 'admin', 'RH','candidat'],
+      default: 'employee',
     },
     active: {
       type: Boolean,
-      default: true,
+    
     },
     // child reference (one to many)
-
+    address: {
+      type: String,
+    },
+    cvFile:{
+      type:data
+    },
   },
   { timestamps: true }
 );

@@ -1,17 +1,33 @@
-// routes/authRoutes.js
 const express = require('express');
 const router = express.Router();
-const authController = require('../controllers/authController');
-
+const authController = require('../controllers/authController.js');
+const authJwt = require('../middlewares/authJwt.js');
+const userController = require('../controllers/userController.js'); 
 router.post('/login', authController.login);
-// routes/authRoutes.js
 router.get('/users', authController.getUsers);
-router.get('/user',authController.getuserbyid);
-// routes/authRoutes.js
+router.get('/rhs', authController.getrhs);
+router.get('/employees', authController.getemployees);
+router.get('/users/:id', authController.getUserById);
 router.post('/register', authController.signup);
-// routes/authRoutes.js
+router.post('/rhSignUp', authController.RHPost);
+router.post('/emplSignUp', authController.EmployeePost);
 router.put('/users/:id', authController.updateUser);
-// routes/authRoutes.js
 router.delete('/users/:id', authController.deleteUser);
+router.post('/logout', authController.logout);
+
+router.delete('/users', authController.deleteUserByEmail);
+
+
+// Route pour l'accès public
+// router.get('/board', authController.allAccess);
+
+// // Route pour l'accès utilisateur
+// router.get('/board/user',userController.userBoard);
+
+// Route pour l'accès directeur
+// router.get('/director/:id', userController.directorBoard);
+
+// // Route pour l'accès administrateur
+// router.get('/admin/:id',userController.adminBoard);
 
 module.exports = router;
