@@ -23,9 +23,9 @@ const candidateSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    cv: {
+    cvFile: {
       type: String, // Assuming you store the file path as a string
-      required: true,
+      
     },
   },
   { timestamps: true }

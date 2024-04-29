@@ -7,7 +7,8 @@ const authRoutes = require('./routes/authRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 const candidatRoutes = require('./routes/candidatRoutes');
 const competenceRoutes = require('./routes/competenceRoutes');
-
+const jobPostRoutes = require('./routes/jobPostRoutes');
+const path=require('path');
 const congeRoutes = require('./routes/congeRoutes');
 const config=require('./config/config.js');
 const cors = require('cors');
@@ -37,6 +38,7 @@ app.use('/api/conge', congeRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/candidat', candidatRoutes);
 app.use('/api/competence', competenceRoutes);
+app.use('/api/job', jobPostRoutes);
 
 
 

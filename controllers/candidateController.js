@@ -195,12 +195,27 @@ exports.createCandidate = async (req, res) => {
 exports.updateCandidate = async (req, res) => {
   try {
     const id = req.params.id;
-    await Candidate.findByIdAndUpdate(id, req.body);
+  
+    
+     // Find the candidate by ID
+     const candidate = await Candidate.findById(id);
+
+     if (!candidate) {
+       return res.status(404).json({ message: 'Candidate not found' });
+     }
+ 
+     if(req.file){
+      candidate.cvFile = req.file.path;
+     }
+   
+     await candidate.save();
+ 
     res.json({ message: 'Candidate updated successfully' });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
+
 
 // DELETE a candidate by ID
 exports.deleteCandidate = async (req, res) => {

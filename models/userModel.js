@@ -45,9 +45,7 @@ const userSchema = new mongoose.Schema(
     address: {
       type: String,
     },
-    cvFile:{
-      type:data
-    },
+ 
   },
   { timestamps: true }
 );
