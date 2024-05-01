@@ -8,6 +8,7 @@ const searchRoutes = require('./routes/searchRoutes');
 const candidatRoutes = require('./routes/candidatRoutes');
 const competenceRoutes = require('./routes/competenceRoutes');
 const jobPostRoutes = require('./routes/jobPostRoutes');
+const jobApplicationRoutes = require('./routes/jobApplicationRoutes.js');
 const path=require('path');
 const congeRoutes = require('./routes/congeRoutes');
 const config=require('./config/config.js');
@@ -39,6 +40,7 @@ app.use('/api/search', searchRoutes);
 app.use('/api/candidat', candidatRoutes);
 app.use('/api/competence', competenceRoutes);
 app.use('/api/job', jobPostRoutes);
+app.use('/api/jobApplication', jobApplicationRoutes);
 
 
 
