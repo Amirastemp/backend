@@ -170,7 +170,7 @@ exports.EmployeePost = async (req, res) => {
     }
 
     // Extract user data from request body
-    const { firstName, lastName, userName, email, password, phone, address,active } = req.body;
+    const { firstName, lastName, userName, description,email, password, phone, address,active } = req.body;
 
     // Check if the email is already registered
     const existingUser = await User.findOne({ email });
@@ -185,7 +185,7 @@ exports.EmployeePost = async (req, res) => {
     const role = 'employee';
 
     // Create a new user object with the provided data and default role
-    const newUser = new User({ firstName, lastName, userName, email, password: hashedPassword, phone, address, role,active });
+    const newUser = new User({ firstName, lastName, userName,description, email, password: hashedPassword, phone, address, role,active });
 
     // Save the new user to the database
     await newUser.save();

@@ -9,6 +9,7 @@ const candidatRoutes = require('./routes/candidatRoutes');
 const competenceRoutes = require('./routes/competenceRoutes');
 const jobPostRoutes = require('./routes/jobPostRoutes');
 const jobApplicationRoutes = require('./routes/jobApplicationRoutes.js');
+const trainingRoutes = require('./routes/trainingRoutes');
 const path=require('path');
 const congeRoutes = require('./routes/congeRoutes');
 const config=require('./config/config.js');
@@ -41,6 +42,7 @@ app.use('/api/candidat', candidatRoutes);
 app.use('/api/competence', competenceRoutes);
 app.use('/api/job', jobPostRoutes);
 app.use('/api/jobApplication', jobApplicationRoutes);
+app.use('/api/training', trainingRoutes);
 
 
 
@@ -54,8 +56,6 @@ io.on('connection', (socket) => {
     io.emit('notification', { message: 'New request added', requestData: requestData });
   });
     
- 
-
   // Handle disconnection
   socket.on('disconnect', () => {
     console.log('User disconnected');
