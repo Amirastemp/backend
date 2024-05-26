@@ -44,13 +44,17 @@ const userSchema = new mongoose.Schema(
     },
     active: {
       type: Boolean,
-    
     },
     // child reference (one to many)
     address: {
       type: String,
     },
- 
+    image: {
+      type: String, // Assuming you store the file path as a string 
+    },
+    hiring_date: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );

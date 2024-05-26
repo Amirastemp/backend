@@ -15,6 +15,17 @@ const jobApplicationSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  jobpostName : {
+    type: String,
+    required: true
+  },
+  cvFile: {
+    type: String 
+  },
+  fromWhere: {
+    type: String,
+    required: true
+  },
   status: {
     type: String,
     enum: ['pending', 'accepted', 'rejected'],

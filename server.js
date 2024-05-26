@@ -35,6 +35,8 @@ const io = socketIO(server, {
   }
 });
 
+app.use('/getimage',express.static('./uploads/images'));
+
 app.use('/api/auth', authRoutes);
 app.use('/api/conge', congeRoutes);
 app.use('/api/search', searchRoutes);

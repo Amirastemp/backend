@@ -129,8 +129,8 @@ exports.RHPost = async (req, res) => {
     }
 
     // Extract user data from request body
-    const { firstName, lastName, userName, email, password, phone, address,active } = req.body;
-
+    const { firstName, lastName, userName, email, password, phone, address,active,hiring_date } = req.body;
+    const image =req.file;
     // Check if the email is already registered
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -144,7 +144,7 @@ exports.RHPost = async (req, res) => {
     const role = 'RH';
 
     // Create a new user object with the provided data and default role
-    const newUser = new User({ firstName, lastName, userName, email, password: hashedPassword, phone, address, role,active });
+    const newUser = new User({ firstName, lastName, userName, email, password: hashedPassword, phone, address, role,hiring_date,active,image: image ? image.filename : null });
 
     // Save the new user to the database
     await newUser.save();
@@ -170,8 +170,8 @@ exports.EmployeePost = async (req, res) => {
     }
 
     // Extract user data from request body
-    const { firstName, lastName, userName, description,email, password, phone, address,active } = req.body;
-
+    const { firstName, lastName, userName, description,email, password, phone, address,active,hiring_date } = req.body;
+ const image =req.file;
     // Check if the email is already registered
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -185,7 +185,7 @@ exports.EmployeePost = async (req, res) => {
     const role = 'employee';
 
     // Create a new user object with the provided data and default role
-    const newUser = new User({ firstName, lastName, userName,description, email, password: hashedPassword, phone, address, role,active });
+    const newUser = new User({ firstName, lastName, userName,description, email, password: hashedPassword, phone, address, role,active,hiring_date,image: image ? image.filename : null });
 
     // Save the new user to the database
     await newUser.save();
@@ -271,11 +271,17 @@ exports.updateUser = async (req, res) => {
     const { updatedRole, active } = req.body;
 
     // Create updateFields object with request body
-    const updateFields = req.body;
+    const updateFields = { ...req.body };
 
     // Check if updatedRole and active are provided, then add them to updateFields
     if (updatedRole) updateFields.role = updatedRole;
     if (active !== undefined) updateFields.active = active;
+
+    // Check if an image file is uploaded
+    if (req.file) {
+      // Assuming the file is saved with multer and its filename is available in req.file.filename
+      updateFields.image = req.file.filename;
+    }
 
     // Update user
     const updatedUser = await User.findByIdAndUpdate(id, updateFields, { new: true });
@@ -289,6 +295,7 @@ exports.updateUser = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 
 /***********************DeleteUser*****************************************************************/
 // controllers/authController.js

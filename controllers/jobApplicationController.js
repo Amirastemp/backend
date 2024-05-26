@@ -3,10 +3,10 @@ const JobApplication = require('../models/jobApplicationModel');
 // Méthode de contrôleur pour créer une candidature à un poste
 exports.createJobApplication = async (req, res) => {
   try {
-    const { jobPostId, candidateId, coverLetter } = req.body;
+    const { jobPostId, candidateId, coverLetter, jobpostName, cvFile, fromWhere } = req.body;
 
     // Vérifier si les champs requis sont présents
-    if (!jobPostId || !candidateId || !coverLetter) {
+    if (!jobPostId || !candidateId || !coverLetter || !jobpostName || !fromWhere) {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
@@ -14,7 +14,10 @@ exports.createJobApplication = async (req, res) => {
     const jobApplication = new JobApplication({
       jobPost: jobPostId,
       candidate: candidateId,
-      coverLetter: coverLetter
+      coverLetter: coverLetter,
+      jobpostName: jobpostName,
+      cvFile: cvFile,
+      fromWhere: fromWhere
     });
 
     // Enregistrer la candidature dans la base de données
@@ -25,6 +28,7 @@ exports.createJobApplication = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 exports.getAllJobApplications = async (req, res) => {
     try {
       // Récupérer tous les job posts depuis la base de données

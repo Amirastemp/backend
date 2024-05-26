@@ -16,7 +16,8 @@ exports.candidatPost = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
     // Extract user data from request body
-    const { firstName, lastName, userName, email, password, phone, address, active } = req.body;
+    const { firstName, lastName, userName, email, password, phone, address,description, active } = req.body;
+    const image = req.file;
     // Check if the email is already registered
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -27,7 +28,7 @@ exports.candidatPost = async (req, res) => {
     // Set role to "candidat"
     const role = 'candidat';
     // Create a new user object with the provided data and role
-    const user = new User({ firstName, lastName, userName, email, password: hashedPassword, phone, address, role, active });
+    const user = new User({ firstName, lastName, userName, email, password: hashedPassword, phone, address, description,role, active, image: image ? image.filename : null });
     // Save the new user to the database
     await user.save();
     // Generate JWT token
@@ -46,7 +47,8 @@ exports.candidatPost = async (req, res) => {
       role: user.role,
       active: user.active,
       accessToken: token,
-      candidatId: newCandidate._id
+      candidatId: newCandidate._id,
+      image: image ? `${image.filename}` : null
     });
   } catch (error) {
     console.error(error);
@@ -79,7 +81,8 @@ exports.login = async (req, res) => {
       email: user.email,
       role: user.role,
       active:user.active,
-      accessToken: token
+      accessToken: token,
+      image: user.image ? `/uploads/images/${user.image.filename}` : null  // Construct the URL for the image
     });
   } catch (error) {
     console.error(error);
