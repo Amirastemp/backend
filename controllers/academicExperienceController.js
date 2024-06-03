@@ -44,6 +44,15 @@ exports.getAllAcademicExperiences = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+exports.getexpAcaById = async (req, res) => {
+  try {
+    const id=req.params.id
+    const academicExperiences = await AcademicExperience.findById(id);
+    res.json(academicExperiences);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 // POST a new academic experience
 exports.createAcademicExperience = async (req, res) => {

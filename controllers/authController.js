@@ -1,10 +1,13 @@
 // controllers/authController.js
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const User = require('../models/userModel');
 const LeaveRequest=require('../models/leaveRequest')
 const config = require('../config/config');
 const { validationResult } = require('express-validator');
+const nodemailer = require('nodemailer');
+let verificationCodes = {};
 
 
 /**********************login**************************************************************************************/
@@ -38,6 +41,117 @@ exports.login = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+exports.sendVerificationCode = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // Recherche de l'utilisateur par email
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Générer un code de vérification
+    const verificationCode = crypto.randomBytes(3).toString('hex');
+    verificationCodes[email] = verificationCode;
+
+    // Envoyer le code de vérification par email
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+  
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Code de vérification',
+      text: `Votre code de vérification est: ${verificationCode}`
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.json({ message: 'Verification code sent successfully' });
+  } catch (error) {
+    console.error('Error sending verification code:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+exports.verifyCodeAndResetPassword = async (req, res) => {
+  const { email, verificationCode, newPassword, confirmPassword } = req.body;
+
+  // Vérification si les mots de passe correspondent
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({ error: 'Passwords do not match' });
+  }
+
+  // Vérification du code de vérification
+  if (verificationCodes[email] !== verificationCode) {
+    return res.status(400).json({ error: 'Invalid verification code' });
+  }
+
+  try {
+    // Recherche de l'utilisateur par email
+    const user = await User.findOne({ email });
+
+    // Hacher le nouveau mot de passe
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Mettre à jour le mot de passe de l'utilisateur avec le mot de passe haché
+    await User.findOneAndUpdate(
+      { email },
+      { password: hashedPassword },
+      { new: true }
+    );
+
+    // Supprimer le code de vérification
+    delete verificationCodes[email];
+
+    res.json({ message: 'Password reset successfully' });
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  const { email, currentPassword, newPassword, confirmPassword } = req.body;
+
+  // Vérification si les mots de passe correspondent
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({ error: 'Passwords do not match' });
+  }
+
+  try {
+    // Recherche de l'utilisateur par email
+    const user = await User.findOne({ email });
+
+    // Vérification de l'existence de l'utilisateur et de la correspondance du mot de passe actuel
+    if (!user || !(await bcrypt.compare(currentPassword, user.password))) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
+    // Hacher le nouveau mot de passe
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Mettre à jour le mot de passe de l'utilisateur avec le mot de passe haché
+    await User.findOneAndUpdate(
+      { email },
+      { password: hashedPassword },
+      { new: true }
+    );
+
+    // Répondre avec un message de succès
+    res.json({ message: 'Password updated successfully' });
+  } catch (error) {
+    console.error('Error updating password:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 /***************************getUsers**************************************************************************************************************************************************/
@@ -129,7 +243,7 @@ exports.RHPost = async (req, res) => {
     }
 
     // Extract user data from request body
-    const { firstName, lastName, userName, email, password, phone, address,active,hiring_date } = req.body;
+    const { firstName, lastName, userName, email,description, password, phone, address,active,hiring_date} = req.body;
     const image =req.file;
     // Check if the email is already registered
     const existingUser = await User.findOne({ email });
@@ -144,7 +258,7 @@ exports.RHPost = async (req, res) => {
     const role = 'RH';
 
     // Create a new user object with the provided data and default role
-    const newUser = new User({ firstName, lastName, userName, email, password: hashedPassword, phone, address, role,hiring_date,active,image: image ? image.filename : null });
+    const newUser = new User({ firstName, lastName, userName, email, description,password: hashedPassword, phone, address, role,hiring_date,active,image: image ? image.filename : null });
 
     // Save the new user to the database
     await newUser.save();

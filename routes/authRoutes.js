@@ -5,6 +5,9 @@ const authJwt = require('../middlewares/authJwt.js');
 const userController = require('../controllers/userController.js'); 
 const uploadimage   = require('../middlewares/uploadimage.js')
 router.post('/login', authController.login);
+router.put('/changepassword', authController.changePassword);
+router.post('/send-verification-code', authController.sendVerificationCode);
+router.post('/verify-code-and-reset-password', authController.verifyCodeAndResetPassword);
 router.get('/users', authController.getUsers);
 router.get('/rhs', authController.getrhs);
 router.get('/employees', authController.getemployees);

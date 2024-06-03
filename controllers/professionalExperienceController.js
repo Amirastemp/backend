@@ -56,7 +56,15 @@ exports.getAllProfessionalExperiences = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
+exports.getexpProById = async (req, res) => {
+  try {
+    const id =req.params.id
+    const professionalExperiences = await ProfessionalExperience.findById(id);
+    res.json(professionalExperiences);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 // POST a new professional experience
 exports.createProfessionalExperience = async (req, res) => {
   const professionalExperience = new ProfessionalExperience(req.body);

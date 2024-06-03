@@ -46,6 +46,15 @@ exports.getAllSkills = async (req, res) => {
   }
 };
 
+exports.getSkillById = async (req, res) => {
+  try {
+    const id=req.params.id
+    const skill = await Skill.findById(id);
+    res.json(skill);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 // POST a new skill
 exports.createSkill = async (req, res) => {
   const skill = new Skill(req.body);

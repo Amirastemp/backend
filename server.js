@@ -10,6 +10,7 @@ const competenceRoutes = require('./routes/competenceRoutes');
 const jobPostRoutes = require('./routes/jobPostRoutes');
 const jobApplicationRoutes = require('./routes/jobApplicationRoutes.js');
 const trainingRoutes = require('./routes/trainingRoutes');
+const contactRoutes = require('./routes/contactRoutes');
 const path=require('path');
 const congeRoutes = require('./routes/congeRoutes');
 const config=require('./config/config.js');
@@ -36,6 +37,8 @@ const io = socketIO(server, {
 });
 
 app.use('/getimage',express.static('./uploads/images'));
+app.use('/getfile', express.static('./uploads/cvFiles')); 
+
 
 app.use('/api/auth', authRoutes);
 app.use('/api/conge', congeRoutes);
@@ -45,6 +48,7 @@ app.use('/api/competence', competenceRoutes);
 app.use('/api/job', jobPostRoutes);
 app.use('/api/jobApplication', jobApplicationRoutes);
 app.use('/api/training', trainingRoutes);
+app.use('/api/contact', contactRoutes);
 
 
 
