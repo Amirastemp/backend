@@ -23,7 +23,12 @@ const http = require('http');
 // Middleware
 app.use(express.json());
 
-
+app.use(session({
+  secret:  process.env.ACCESS_TOKEN_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // Utilisez true si vous utilisez HTTPS
+}));
 app.use(cors());
 
 const server = http.createServer(app);

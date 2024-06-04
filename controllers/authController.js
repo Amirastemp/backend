@@ -369,11 +369,21 @@ exports.signup = async (req, res) => {
 };
 
 /*********************logout*******************************************************************/
-// Logout route
+
 exports.logout = (req, res) => {
-  req.session.destroy(); // Destroy the session
-  res.status(200).json({ message: 'Logout successful' });
+  if (req.session) {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ message: 'Failed to destroy session' });
+      } else {
+        return res.status(200).json({ message: 'Logout successful' });
+      }
+    });
+  } else {
+    return res.status(200).json({ message: 'No session to destroy' });
+  }
 };
+
 
 
 
